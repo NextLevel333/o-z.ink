@@ -55,7 +55,7 @@ body {
     position: fixed;
     pointer-events: none;
     z-index: 9998;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     transform: translate(-50%, -50%);
     opacity: 0.5;
 }
@@ -170,7 +170,7 @@ h1, h2, h3 {
 }
 
 .scroll-indicator span {
-    font-size: 0.875rem;
+    font-size: 0.5rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
 }
@@ -259,9 +259,9 @@ section {
 
 .gallery-card {
     position: relative;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     overflow: hidden;
-    aspect-ratio: 4/5;
+    aspect-ratio: 5/5;
     background: var(--card-bg);
     border: 1px solid rgba(139, 92, 246, 0.2);
     transition: all 0.4s ease;
