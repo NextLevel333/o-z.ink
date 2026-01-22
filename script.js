@@ -92,7 +92,13 @@ window.addEventListener('load', () => {
 });
 
 // Add dynamic background particles (optional enhancement)
+let particleCount = 0;
+const MAX_PARTICLES = 20;
+
 function createParticle() {
+    if (particleCount >= MAX_PARTICLES) return;
+    
+    particleCount++;
     const particle = document.createElement('div');
     particle.className = 'particle';
     particle.style.cssText = `
@@ -109,7 +115,10 @@ function createParticle() {
     `;
     document.body.appendChild(particle);
     
-    setTimeout(() => particle.remove(), 15000);
+    setTimeout(() => {
+        particle.remove();
+        particleCount--;
+    }, 15000);
 }
 
 // Add particle style to document
@@ -152,7 +161,6 @@ window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
         // Recalculate any necessary dimensions
-        console.log('Window resized, recalculating layout...');
     }, 250);
 });
 
@@ -177,5 +185,3 @@ if ('ontouchstart' in window) {
         });
     });
 }
-
-console.log('O-Z.Ink Portfolio - Initialized ✨');
