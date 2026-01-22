@@ -1,8 +1,8 @@
-name: Deploy to Public Pages Repo
+name: Deploy to Public Pages Repo (No Build)
 
 on:
   push:
-    branches: [ "main" ]  # change if you deploy from a different branch
+    branches: ["main"]  # change if you deploy from a different branch
 
 permissions:
   contents: read
@@ -14,27 +14,22 @@ jobs:
     steps:
       - name: Checkout private repo
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build site
-        run: npm run build
-
-      - name: Prepare site files (Mode B)
+      - name: Prepare site files
         run: |
           rm -rf out
           mkdir -p out
-          rsync -av --delete dist/ out/
 
-      # --------------------------
-      # Deploy /out to the PUBLIC repo
-      # Preserves CNAME if it exists in the public repo
-      # --------------------------
+          # Copy everything except repo/meta/dev stuff
+          rsync -av --delete \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude "node_modules" \
+            --exclude ".DS_Store" \
+            --exclude "README.md" \
+            --exclude ".gitignore" \
+            ./ out/
+
       - name: Deploy to public Pages repo
         env:
           PAGES_TOKEN: ${{ secrets.PAGES_TOKEN }}
@@ -49,24 +44,22 @@ jobs:
           rm -rf public-repo
           git clone https://x-access-token:${PAGES_TOKEN}@github.com/${PAGES_REPO}.git public-repo
 
-          # Preserve existing CNAME (and any other files you want to keep)
-          PRESERVE_CNAME=false
+          # Preserve CNAME (recommended to keep domain stable)
           if [ -f public-repo/CNAME ]; then
             cp public-repo/CNAME /tmp/CNAME
-            PRESERVE_CNAME=true
           fi
 
-          # Replace contents of public repo with new build output
+          # Replace contents of public repo with new site
           rsync -av --delete out/ public-repo/
 
           # Restore CNAME if it existed
-          if [ "$PRESERVE_CNAME" = true ]; then
+          if [ -f /tmp/CNAME ]; then
             cp /tmp/CNAME public-repo/CNAME
           fi
 
           cd public-repo
 
-          # Commit + push only if there are changes
+          # Commit + push only if changes exist
           if [ -n "$(git status --porcelain)" ]; then
             git add -A
             git commit -m "Deploy from private repo: ${GITHUB_SHA}"
