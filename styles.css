@@ -261,9 +261,9 @@ section {
     position: relative;
     border-radius: 1.5rem;
     overflow: hidden;
-    aspect-ratio: 5/5;
+    aspect-ratio: 4/5;
     background: var(--card-bg);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    border: 3px solid rgba(139, 92, 246, 0.2);
     transition: all 0.4s ease;
     cursor: none;
 }
@@ -277,7 +277,7 @@ section {
 }
 
 .placeholder-image {
-    width: 100%;
+    width: auto;
     height: 100%;
     display: flex;
     align-items: center;
